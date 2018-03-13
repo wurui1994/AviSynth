@@ -76,8 +76,8 @@ IF( MSVC_IDE )  # Check for Visual Studio
   endif() 
 
   # Set additional optimization flags
-  set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Oy /Ot /GS- /Oi")
-  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Oy /Ot /GS- /Oi")
+  set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} /Oy /Ot /GS- /Oi /MT")
+  set(CMAKE_CXX_FLAGS_RELEASE "${CMAKE_CXX_FLAGS_RELEASE} /Oy /Ot /GS- /Oi /MT")
 ELSE()
 
   SET( CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -std=gnu++14" )

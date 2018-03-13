@@ -17,6 +17,8 @@ bash -c "unzip %PackageVersion%-shared.zip"
 rename %PackageVersion%-dev dev
 rename %PackageVersion%-shared shared
 
+rmdir /s/q bin include lib
+
 move dev/include include
 move dev/lib lib
 move shared/bin bin
@@ -75,3 +77,6 @@ cd ffms2\build-msvc
 msbuild /m /p:platform=x86 /p:configuration=release ffms2.sln
 popd
 copy /y ffms2\build-msvc\bin\Win32\Release\ffms2.dll ffmpeg32\bin
+
+move ffmpeg32\bin\VSFilter.dll ffmpeg32\bin\system
+move ffmpeg32\bin\ffms2.dll ffmpeg32\bin\system
