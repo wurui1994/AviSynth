@@ -1,6 +1,7 @@
 REM use `comenv` set cmake
 pushd .
 @call "C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\Auxiliary\Build\vcvarsall.bat" x86
+@set PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\VC\";%PATH%;
 popd
 
 REM get ffmpeg
@@ -46,6 +47,7 @@ rename swscale-4.lib swscale.lib
 popd
 
 REM build xy-VSFilter [Need MFC]
+REM VSYASM[https://github.com/ShiftMediaProject/VSYASM]
 pushd .
 cd xy-VSFilter
 msbuild /m /p:platform=win32 /p:configuration=release
@@ -77,6 +79,7 @@ cd ffms2\build-msvc
 msbuild /m /p:platform=x86 /p:configuration=release ffms2.sln
 popd
 copy /y ffms2\build-msvc\bin\Win32\Release\ffms2.dll ffmpeg32\bin
+REM copy /y ffms2\build-msvc\bin\Win32\Release\ffmsindex.exe ffmpeg32\bin
 
 move ffmpeg32\bin\VSFilter.dll ffmpeg32\bin\system
 move ffmpeg32\bin\ffms2.dll ffmpeg32\bin\system

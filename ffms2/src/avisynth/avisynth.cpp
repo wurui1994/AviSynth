@@ -22,6 +22,23 @@
 #include "ffms.h"
 #include "avssources.h"
 #include "../core/utils.h"
+#include <iostream>
+
+int FFMS_CC UpdateProgress(int64_t Current, int64_t Total, void *Private) {
+
+	int Percentage = int((double(Current) / double(Total)) * 100);
+
+	if (Private) {
+		int *LastPercentage = (int *)Private;
+		if (Percentage <= *LastPercentage)
+			return 0;
+		*LastPercentage = Percentage;
+	}
+
+	std::cout << "Indexing, please wait... " << Percentage << "%" << std::endl;
+
+	return 0;
+}
 
 static AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvironment* Env) {
     if (!Args[0].Defined())
@@ -43,9 +60,14 @@ static AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvi
     ErrorInfo E;
     FFMS_Index *Index = FFMS_ReadIndex(CacheFile, &E);
     if (OverWrite || !Index || (Index && FFMS_IndexBelongsToFile(Index, Source, 0) != FFMS_ERROR_SUCCESS)) {
+        std::cout << "FFIndex..." << std::endl;
+        UpdateProgress(0, 100, nullptr);
         FFMS_Indexer *Indexer = FFMS_CreateIndexer(Source, &E);
         if (!Indexer)
             Env->ThrowError("FFIndex: %s", E.Buffer);
+
+        int Progress = 0;
+        FFMS_SetProgressCallback(Indexer, UpdateProgress, &Progress);
 
         // Treat -1 as meaning track numbers above sizeof(int) too
         if (IndexMask == -1)
@@ -60,6 +82,9 @@ static AVSValue __cdecl CreateFFIndex(AVSValue Args, void* UserData, IScriptEnvi
         Index = FFMS_DoIndexing2(Indexer, ErrorHandling, &E);
         if (!Index)
             Env->ThrowError("FFIndex: %s", E.Buffer);
+
+        UpdateProgress(100, 100, nullptr);
+
         if (FFMS_WriteIndex(CacheFile, Index, &E)) {
             FFMS_DestroyIndex(Index);
             Env->ThrowError("FFIndex: %s", E.Buffer);
@@ -138,13 +163,21 @@ static AVSValue __cdecl CreateFFVideoSource(AVSValue Args, void* UserData, IScri
     }
 
     if (!Index) {
+        std::cout << "FFVideoSource Index..." << std::endl;
+        UpdateProgress(0, 100, nullptr);
         FFMS_Indexer *Indexer = FFMS_CreateIndexer(Source, &E);
         if (!Indexer)
             Env->ThrowError("FFVideoSource: %s", E.Buffer);
 
+        int Progress = 0;
+        FFMS_SetProgressCallback(Indexer, UpdateProgress, &Progress);
+
         Index = FFMS_DoIndexing2(Indexer, FFMS_IEH_CLEAR_TRACK, &E);
         if (!Index)
             Env->ThrowError("FFVideoSource: %s", E.Buffer);
+
+        UpdateProgress(100, 100, nullptr);
+
 
         if (Cache)
             if (FFMS_WriteIndex(CacheFile, Index, &E)) {
@@ -237,15 +270,21 @@ static AVSValue __cdecl CreateFFAudioSource(AVSValue Args, void* UserData, IScri
     }
 
     if (!Index) {
+        std::cout << "FFAudioSource Index..." << std::endl;
         FFMS_Indexer *Indexer = FFMS_CreateIndexer(Source, &E);
         if (!Indexer)
             Env->ThrowError("FFAudioSource: %s", E.Buffer);
+
+        int Progress = 0;
+        FFMS_SetProgressCallback(Indexer, UpdateProgress, &Progress);
 
         FFMS_TrackTypeIndexSettings(Indexer, FFMS_TYPE_AUDIO, 1, 0);
 
         Index = FFMS_DoIndexing2(Indexer, FFMS_IEH_CLEAR_TRACK, &E);
         if (!Index)
             Env->ThrowError("FFAudioSource: %s", E.Buffer);
+
+        UpdateProgress(100, 100, nullptr);
 
         if (Cache)
             if (FFMS_WriteIndex(CacheFile, Index, &E)) {
