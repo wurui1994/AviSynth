@@ -78,7 +78,12 @@ static void av_log_windebug_callback(void* ptr, int level, const char* fmt, va_l
 
 #endif
 
+#include <Windows.h>
+
 FFMS_API(void) FFMS_Init(int, int) {
+#ifdef WIN32
+	SetDllDirectoryA("..");
+#endif
     std::call_once(FFmpegOnce, []() {
         av_register_all();
 #ifdef FFMS_WIN_DEBUG
@@ -88,12 +93,14 @@ FFMS_API(void) FFMS_Init(int, int) {
         av_log_set_level(AV_LOG_INFO);
 #endif
     });
+#if 0
     FFmpegNetwork.lock();
     if (!FFmpegNetworkInited) {
         avformat_network_init();
         FFmpegNetworkInited = true;
     }
     FFmpegNetwork.unlock();
+#endif
 }
 
 FFMS_API(void) FFMS_Deinit() {

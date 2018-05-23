@@ -939,10 +939,14 @@ ScriptEnvironment::ScriptEnvironment()
     global_var_table->Set("$ScriptDirUtf8$", AVSValue());
 
     plugin_manager = new PluginManager(this);
-    plugin_manager->AddAutoloadDir("USER_PLUS_PLUGINS", false);
-    plugin_manager->AddAutoloadDir("MACHINE_PLUS_PLUGINS", false);
-    plugin_manager->AddAutoloadDir("USER_CLASSIC_PLUGINS", false);
-    plugin_manager->AddAutoloadDir("MACHINE_CLASSIC_PLUGINS", false);
+    //plugin_manager->AddAutoloadDir("USER_PLUS_PLUGINS", false);
+    //plugin_manager->AddAutoloadDir("MACHINE_PLUS_PLUGINS", false);
+    //plugin_manager->AddAutoloadDir("USER_CLASSIC_PLUGINS", false);
+    //plugin_manager->AddAutoloadDir("MACHINE_CLASSIC_PLUGINS", false);
+
+	plugin_manager->AddAutoloadDir(".\\plugins\\", false);
+	plugin_manager->AddAutoloadDir(".\\plugins+\\", false);
+	plugin_manager->AddAutoloadDir(".\\system\\", false);
 
     global_var_table->Set("LOG_ERROR",   (int)LOGLEVEL_ERROR);
     global_var_table->Set("LOG_WARNING", (int)LOGLEVEL_WARNING);

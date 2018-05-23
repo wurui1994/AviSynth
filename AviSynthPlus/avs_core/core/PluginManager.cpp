@@ -495,25 +495,37 @@ void PluginManager::ClearAutoloadDirs()
   AutoloadDirs.clear();
 }
 
+#include <Shlwapi.h>  
+
+#pragma comment(lib,"ShLwApi.Lib")
+
 void PluginManager::AddAutoloadDir(const std::string &dirPath, bool toFront)
 {
   if (AutoloadExecuted)
     Env->ThrowError("Cannot modify directory list after the autoload procedure has already executed.");
 
-  std::string dir(dirPath);
-
   // get folder of our executable
   TCHAR ExeFilePath[AVS_MAX_PATH];
   memset(ExeFilePath, 0, sizeof(ExeFilePath[0])*AVS_MAX_PATH);  // WinXP does not terminate the result of GetModuleFileName with a zero, so me must zero our buffer
-  GetModuleFileName(NULL, ExeFilePath, AVS_MAX_PATH);
-  std::string ExeFileDir(ExeFilePath);
-  replace(ExeFileDir, '\\', '/');
-  ExeFileDir = ExeFileDir.erase(ExeFileDir.rfind('/'), std::string::npos);
+  //GetModuleFileName(NULL, ExeFilePath, AVS_MAX_PATH);
+  //std::string ExeFileDir(ExeFilePath);
+  //replace(ExeFileDir, '\\', '/');
+  //ExeFileDir = ExeFileDir.erase(ExeFileDir.rfind('/'), std::string::npos);
+  if (GetModuleFileName(NULL, ExeFilePath, MAX_PATH))
+  {
+	  PathRemoveFileSpec(ExeFilePath);
+  }
+  else
+  {
+	  //Òì³£´¦Àí  
+  }
+
+  std::string dir(ExeFilePath + dirPath);
 
   // variable expansion
   replace_beginning(dir, "SCRIPTDIR", Env->GetVar("$ScriptDir$", ""));
   replace_beginning(dir, "MAINSCRIPTDIR", Env->GetVar("$MainScriptDir$", ""));
-  replace_beginning(dir, "PROGRAMDIR", ExeFileDir);
+  replace_beginning(dir, "PROGRAMDIR", ExeFilePath);
 
   std::string plugin_dir;
   if (GetRegString(HKEY_CURRENT_USER, RegAvisynthKey, RegPluginDirPlus, &plugin_dir))
@@ -539,6 +551,8 @@ void PluginManager::AddAutoloadDir(const std::string &dirPath, bool toFront)
     AutoloadDirs.insert(AutoloadDirs.begin(), GetFullPathNameWrap(dir));
   else
     AutoloadDirs.push_back(GetFullPathNameWrap(dir));
+  //
+  //std::cout << "FullPathName:" << GetFullPathNameWrap(dir) << std::endl;
 }
 
 void PluginManager::AutoloadPlugins()
@@ -552,9 +566,10 @@ void PluginManager::AutoloadPlugins()
   const char *binaryFilter = "*.dll";
   const char *scriptFilter = "*.avsi";
 
-  AutoloadDirs.push_back(".\\plugins\\");
-  AutoloadDirs.push_back(".\\plugins+\\");
-  AutoloadDirs.push_back(".\\system\\");
+  //AutoloadDirs.push_back(".\\");
+  //AutoloadDirs.push_back(".\\plugins\\");
+  //AutoloadDirs.push_back(".\\plugins+\\");
+  //AutoloadDirs.push_back(".\\system\\");
 
   // Load binary plugins
   for (const std::string& dir : AutoloadDirs)

@@ -1592,7 +1592,7 @@ PVideoFrame Histogram::DrawModeClassic(int n, IScriptEnvironment* env)
   int hist_range_luma = hist_tv_range_hi_luma - hist_tv_range_low; // 219
   int hist_mid_range_luma = (hist_range_luma + 1) / 2 + hist_tv_range_low - 1; // in Classic Avisynth somehow 124 was fixed for this
   // 235-16 = 219 / 2 => 110; 110 + 16 - 1 = 125.0
-  int hist_tv_range_hi_chroma = 240 << (show_bits - 8); // 16-240,64–960, 256–3852,... 4096-61692
+  int hist_tv_range_hi_chroma = 240 << (show_bits - 8); // 16-240,64?60, 256?852,... 4096-61692
   int hist_range_chroma = hist_tv_range_hi_chroma - hist_tv_range_low; // 224
 
   int internal_bits_per_pixel = (pixelsize == 4) ? 16 : bits_per_pixel; // hack for float
@@ -1601,7 +1601,7 @@ PVideoFrame Histogram::DrawModeClassic(int n, IScriptEnvironment* env)
   int tv_range_low = 16 << (internal_bits_per_pixel - 8); // 16
   int tv_range_hi_luma = 235 << (internal_bits_per_pixel - 8); // 16-235
   int range_luma = tv_range_hi_luma - tv_range_low; // 219
-  int tv_range_hi_chroma = 240 << (internal_bits_per_pixel - 8); // 16-240,64–960, 256–3852,... 4096-61692
+  int tv_range_hi_chroma = 240 << (internal_bits_per_pixel - 8); // 16-240,64?60, 256?852,... 4096-61692
   int range_chroma = tv_range_hi_chroma - tv_range_low; // 224
   int middle_chroma = 1 << (internal_bits_per_pixel - 1); // 128
 

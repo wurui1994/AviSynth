@@ -8,7 +8,7 @@ REM get ffmpeg
 pushd .
 mkdir ffmpeg32
 cd ffmpeg32
-set PackageVersion=ffmpeg-3.4.2-win32
+set PackageVersion=ffmpeg-4.0-win32
 bash -c "wget -c https://ffmpeg.zeranoe.com/builds/win32/dev/%PackageVersion%-dev.zip"
 bash -c "wget -c https://ffmpeg.zeranoe.com/builds/win32/shared/%PackageVersion%-shared.zip"
 
@@ -36,14 +36,14 @@ for %%f in (*.def) do lib /def:%%f
 
 del *.exp *.def
 
-rename avcodec-57.lib avcodec.lib
-rename avdevice-57.lib avdevice.lib
-rename avfilter-6.lib avfilter.lib
-rename avformat-57.lib avformat.lib
-rename avutil-55.lib avutil.lib
-rename postproc-54.lib postproc.lib
-rename swresample-2.lib swresample.lib
-rename swscale-4.lib swscale.lib
+rename avcodec-*.lib avcodec.lib
+rename avdevice-*.lib avdevice.lib
+rename avfilter-*.lib avfilter.lib
+rename avformat-*.lib avformat.lib
+rename avutil-*.lib avutil.lib
+rename postproc-*.lib postproc.lib
+rename swresample-*.lib swresample.lib
+rename swscale-*.lib swscale.lib
 popd
 
 REM build xy-VSFilter [Need MFC]
