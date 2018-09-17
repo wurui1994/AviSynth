@@ -8,7 +8,7 @@ REM get ffmpeg
 pushd .
 mkdir ffmpeg32
 cd ffmpeg32
-set PackageVersion=ffmpeg-4.0-win32
+set PackageVersion=ffmpeg-4.0.2-win32
 bash -c "wget -c https://ffmpeg.zeranoe.com/builds/win32/dev/%PackageVersion%-dev.zip"
 bash -c "wget -c https://ffmpeg.zeranoe.com/builds/win32/shared/%PackageVersion%-shared.zip"
 

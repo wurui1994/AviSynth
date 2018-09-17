@@ -28,6 +28,7 @@
 #include <limits>
 #include <numeric>
 #include <sstream>
+#include <iostream>
 
 extern "C" {
 #include <libavutil/avutil.h>
@@ -324,7 +325,8 @@ void FFMS_Indexer::CheckAudioProperties(int Track, AVCodecContext *Context) {
             << " Sample rate: " << it->second.SampleRate << " -> " << Context->sample_rate << ";"
             << " Sample format: " << GetLAVCSampleFormatName((AVSampleFormat)it->second.SampleFormat) << " -> "
             << GetLAVCSampleFormatName(Context->sample_fmt);
-        throw FFMS_Exception(FFMS_ERROR_UNSUPPORTED, FFMS_ERROR_DECODING, buf.str());
+        //throw FFMS_Exception(FFMS_ERROR_UNSUPPORTED, FFMS_ERROR_DECODING, buf.str());
+		std::cout << buf.str() << std::endl;
     }
 }
 
